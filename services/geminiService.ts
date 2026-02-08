@@ -5,8 +5,8 @@ let ai: any = null;
 async function getAI() {
   if (!ai) {
     const { GoogleGenAI } = await import('@google/genai');
-    // Vite replaces process.env.GEMINI_API_KEY at build time via the define config
     const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || '';
+    console.log("[v0] API key available:", !!apiKey, "length:", apiKey.length);
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY is not configured. Please set it in environment variables.');
     }
@@ -42,13 +42,21 @@ async function callGemini(prompt: string, filePayload?: { data: string; mimeType
 
   parts.push({ text: prompt });
 
-  const client = await getAI();
-  const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: [{ role: 'user', parts }],
-  });
-
-  return response.text ?? '';
+  try {
+    console.log("[v0] callGemini: getting AI client...");
+    const client = await getAI();
+    console.log("[v0] callGemini: calling generateContent...");
+    const response = await client.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: [{ role: 'user', parts }],
+    });
+    console.log("[v0] callGemini: response received, text length:", response.text?.length);
+    return response.text ?? '';
+  } catch (error: any) {
+    console.error("[v0] callGemini error:", error?.message || error);
+    console.error("[v0] callGemini full error:", JSON.stringify(error, null, 2));
+    throw error;
+  }
 }
 
 function parseJSON<T>(text: string): T {

@@ -95,8 +95,9 @@ const App: React.FC = () => {
       setCustomSkills([]);
       setStep(2);
       setMaxReachedStep(Math.max(maxReachedStep, 2));
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("[v0] startRedesign error:", error?.message || error);
+      console.error("[v0] startRedesign full error:", error);
       alert('שגיאה בניתוח המטלה. אנא נסה שנית.');
     } finally {
       setLoading(false);
