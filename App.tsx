@@ -8,7 +8,6 @@ import StepStrategyBuilder from './components/StepStrategyBuilder';
 import StepFinalResult from './components/StepFinalResult';
 import Stepper from './components/Stepper';
 import { AppMode, BloomLevel, Skill, AssessmentMethod } from './types';
-import mammoth from 'mammoth';
 import { 
   analyzeBloomTaxonomy, 
   generateAssessmentStrategies, 
@@ -23,6 +22,7 @@ interface SectionState extends TaskSection {
 }
 
 const App: React.FC = () => {
+  console.log("[v0] App component rendering");
   const [mode, setMode] = useState<AppMode>('HOME');
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
@@ -48,6 +48,7 @@ const App: React.FC = () => {
       reader.onload = async (evt) => {
         const arrayBuffer = evt.target?.result as ArrayBuffer;
         try {
+          const mammoth = (await import('mammoth')).default;
           const result = await mammoth.extractRawText({ arrayBuffer });
           const text = result.value;
           setAssignmentText(prev => {

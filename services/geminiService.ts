@@ -1,9 +1,15 @@
-import { GoogleGenAI } from '@google/genai';
 import { Skill, AssessmentMethod, BloomLevel } from '../types';
 
-const apiKey = (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) || (typeof process !== 'undefined' && process.env?.API_KEY) || '';
+let ai: any = null;
 
-const ai = new GoogleGenAI({ apiKey });
+async function getAI() {
+  if (!ai) {
+    const { GoogleGenAI } = await import('@google/genai');
+    const apiKey = (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) || (typeof process !== 'undefined' && process.env?.API_KEY) || '';
+    ai = new GoogleGenAI({ apiKey });
+  }
+  return ai;
+}
 
 export interface TaskSection {
   title: string;
@@ -32,7 +38,8 @@ async function callGemini(prompt: string, filePayload?: { data: string; mimeType
 
   parts.push({ text: prompt });
 
-  const response = await ai.models.generateContent({
+  const client = await getAI();
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: [{ role: 'user', parts }],
   });
