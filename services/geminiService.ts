@@ -5,10 +5,16 @@ let ai: any = null;
 async function getAI() {
   if (!ai) {
     const { GoogleGenAI } = await import('@google/genai');
-    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || '';
-    console.log("[v0] API key available:", !!apiKey, "length:", apiKey.length);
+    // Try multiple ways to access the API key
+    const apiKey = 
+      (typeof import.meta !== 'undefined' && (import.meta as any).env?.GEMINI_API_KEY) ||
+      process.env.GEMINI_API_KEY || 
+      process.env.API_KEY || 
+      '';
+    console.log("[v0] API key check - available:", !!apiKey, "length:", apiKey.length);
+    console.log("[v0] import.meta.env keys:", typeof import.meta !== 'undefined' ? Object.keys((import.meta as any).env || {}).filter(k => k.includes('GEMINI') || k.includes('API')) : 'N/A');
     if (!apiKey) {
-      throw new Error('GEMINI_API_KEY is not configured. Please set it in environment variables.');
+      throw new Error('GEMINI_API_KEY is not configured. Please add it in the Vars section of the sidebar.');
     }
     ai = new GoogleGenAI({ apiKey });
   }

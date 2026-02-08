@@ -96,9 +96,10 @@ const App: React.FC = () => {
       setStep(2);
       setMaxReachedStep(Math.max(maxReachedStep, 2));
     } catch (error: any) {
-      console.error("[v0] startRedesign error:", error?.message || error);
+      const msg = error?.message || String(error);
+      console.error("[v0] startRedesign error:", msg);
       console.error("[v0] startRedesign full error:", error);
-      alert('שגיאה בניתוח המטלה. אנא נסה שנית.');
+      alert(`שגיאה בניתוח המטלה: ${msg}`);
     } finally {
       setLoading(false);
     }
