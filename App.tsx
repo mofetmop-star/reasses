@@ -22,7 +22,6 @@ interface SectionState extends TaskSection {
 }
 
 const App: React.FC = () => {
-  console.log("[v0] App component rendering");
   const [mode, setMode] = useState<AppMode>('HOME');
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);

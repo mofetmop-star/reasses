@@ -5,7 +5,11 @@ let ai: any = null;
 async function getAI() {
   if (!ai) {
     const { GoogleGenAI } = await import('@google/genai');
-    const apiKey = (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) || (typeof process !== 'undefined' && process.env?.API_KEY) || '';
+    // Vite replaces process.env.GEMINI_API_KEY at build time via the define config
+    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || '';
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY is not configured. Please set it in environment variables.');
+    }
     ai = new GoogleGenAI({ apiKey });
   }
   return ai;
